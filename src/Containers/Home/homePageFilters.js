@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextField from "@material-ui/core/TextField";
 import { grey } from "@material-ui/core/colors";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -51,11 +51,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Filters = ({ type, courses, changeSessionDisplay }) => {
+const Filters = ({ type, courses, changeSessionDisplay, details }) => {
   const classes = useStyles();
 
   const [listType, setListType] = useState("all");
   const [courseType, setCourseType] = useState("all");
+
+  useEffect(() => {
+    setListType("all");
+    setCourseType("all");
+
+    changeSessionDisplay("session", "all");
+    if (type === userTypes.COLLEGE) changeSessionDisplay("course", "all");
+  }, [details]);
 
   const updateList = (newValue, dropdownType) => {
     console.log(newValue);

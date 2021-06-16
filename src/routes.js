@@ -7,9 +7,10 @@ import Auth from "./hoc/auth";
 // PAGES
 import Home from "./Containers/Home/home";
 import { ThemeProvider } from "@material-ui/core";
-import { theme } from "./helpers/utils";
+import { theme, userTypes } from "./helpers/utils";
 import AuthPage from "./Containers/AuthPage/authPage";
 import Meeting from "./Containers/Meeting/meeting";
+import MyCourses from "./Containers/MyCourses/myCourses";
 
 const Routes = () => {
   return (
@@ -17,6 +18,11 @@ const Routes = () => {
       <Switch>
         <Route path="/login" exact component={Auth(AuthPage, false, false)} />
         <Route exact path="/session/:token" component={Meeting} />
+        <Route
+          exact
+          path="/myCourses"
+          component={Auth(MyCourses, userTypes.COLLEGE)}
+        />
         <Route path="/" component={Auth(Home)} />
       </Switch>
     </ThemeProvider>

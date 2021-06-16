@@ -1,5 +1,5 @@
 import { Button, makeStyles } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { userTypes } from "../../helpers/utils";
@@ -61,6 +61,7 @@ const useStyles = makeStyles((theme) => ({
     width: 30,
     height: 30,
     marginLeft: 20,
+    cursor: "pointer",
   },
   arrow: {
     color: theme.palette.common.white,
@@ -88,15 +89,17 @@ const useStyles = makeStyles((theme) => ({
 
 const Header = ({ user: { details, type }, collegeAddSessions, logout }) => {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [show, setShowMenu] = useState(false);
   const [showBuySession, setShowBuySession] = useState(false);
   const history = useHistory();
 
-  const handleOpenMenu = (event) => {
-    setAnchorEl(event.currentTarget);
+  const menuTrigger = useRef(null);
+
+  const handleOpenMenu = () => {
+    setShowMenu(true);
   };
 
-  const handleClose = () => setAnchorEl(null);
+  const handleClose = () => setShowMenu(false);
 
   const handleLogout = async () => {
     await logout();
@@ -109,7 +112,7 @@ const Header = ({ user: { details, type }, collegeAddSessions, logout }) => {
         text: "Buy Sessions",
         func: () => {
           setShowBuySession(true);
-          setAnchorEl(null);
+          setShowMenu(null);
         },
         Icon: ShoppingBasketIcon,
       },
@@ -177,16 +180,21 @@ const Header = ({ user: { details, type }, collegeAddSessions, logout }) => {
               src={details?.image}
               alt="user-image"
               className={classes.avatar}
+              onClick={handleOpenMenu}
             />
-            <IconButton className={classes.arrow} onClick={handleOpenMenu}>
+            <IconButton
+              className={classes.arrow}
+              onClick={handleOpenMenu}
+              ref={menuTrigger}
+            >
               <ExpandMoreIcon />
             </IconButton>
             <Menu
               id="user-menu"
               keepMounted
-              open={Boolean(anchorEl)}
+              open={show}
               onClose={handleClose}
-              anchorEl={anchorEl}
+              anchorEl={menuTrigger.current}
               getContentAnchorEl={null}
               anchorOrigin={{
                 vertical: "bottom",

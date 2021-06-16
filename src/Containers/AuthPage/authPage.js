@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 const AuthPage = () => {
   const classes = useStyles();
 
-  const [login, setLogin] = useState(false);
+  const [login, setLogin] = useState(true);
 
   return (
     <>

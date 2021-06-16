@@ -21,8 +21,6 @@ const useStyles = makeStyles((theme) => ({
   },
   action: {
     borderRadius: 6,
-    width: "auto",
-    textAlign: "center",
     padding: "3px 7px",
     backgroundColor: theme.palette.secondary.main,
     fontSize: 15,
@@ -179,7 +177,7 @@ const SessionCard = ({
         <h5 className="ses-info-topic">
           <b>{topic.trim()}</b>
         </h5>
-        <div className="divider bottom-margin" />
+        <div className="divider" />
         <div className="ses-info">
           {combineDescription()}
           <p className="ses-info-text">

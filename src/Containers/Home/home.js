@@ -17,6 +17,7 @@ import { getCollegeSponsoredSessions } from "../../helpers/Apis/student";
 import SessionCard from "../../Components/SessionCard/SessionCard";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
+import Loading from "../../WidgetsUI/Loading/loading";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -72,6 +73,9 @@ const useStyles = makeStyles((theme) => ({
   searchIcon: {
     color: theme.palette.common.black,
   },
+  loading: {
+    marginTop: 50,
+  },
 }));
 
 const Home = ({ user: { details, type } }) => {
@@ -83,6 +87,7 @@ const Home = ({ user: { details, type } }) => {
   const [clgSponsored, setClgSponsored] = useState([]);
   const [courses, setCourses] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (type === userTypes.COLLEGE) {
@@ -92,6 +97,7 @@ const Home = ({ user: { details, type } }) => {
           setSessions(sessions);
           setDislpaySessions(sessions);
           setClgSubscribed(sessionIds);
+          setLoading(false);
         });
       });
     } else {
@@ -107,6 +113,7 @@ const Home = ({ user: { details, type } }) => {
         }
         setSessions(sessions);
         setDislpaySessions(sessions);
+        setLoading(false);
       });
     }
   }, []);
@@ -179,33 +186,40 @@ const Home = ({ user: { details, type } }) => {
           }}
         />
       </div>
-      <div className={`padding-alignment ${classes.bodyHeader}`}>
-        <p className={classes.sesHeading}>Recommended Sessions</p>
-        <Filters
-          type={type}
-          courses={courses}
-          changeSessionDisplay={changeDisplayList}
-        />
-      </div>
-      <div className={`padding-alignment sessions_wrapper`}>
-        {dislpaySessions !== undefined && dislpaySessions.length !== 0 ? (
-          dislpaySessions.map((session, i) => {
-            return (
-              <SessionCard
-                key={session.id}
-                {...session}
-                sessionsRegistered={clgSubscribed}
-                setSessionsRegistered={setClgSubscribed}
-                collegeSessions={clgSponsored}
-              />
-            );
-          })
-        ) : (
-          <>
-            <h4>No sessions to display!</h4>
-          </>
-        )}
-      </div>
+      {loading ? (
+        <Loading loaderStyles={classes.loading} />
+      ) : (
+        <>
+          <div className={`padding-alignment ${classes.bodyHeader}`}>
+            <p className={classes.sesHeading}>Recommended Sessions</p>
+            <Filters
+              type={type}
+              courses={courses}
+              changeSessionDisplay={changeDisplayList}
+              details={details}
+            />
+          </div>
+          <div className={`padding-alignment sessions_wrapper`}>
+            {dislpaySessions !== undefined && dislpaySessions.length !== 0 ? (
+              dislpaySessions.map((session, i) => {
+                return (
+                  <SessionCard
+                    key={session.id}
+                    {...session}
+                    sessionsRegistered={clgSubscribed}
+                    setSessionsRegistered={setClgSubscribed}
+                    collegeSessions={clgSponsored}
+                  />
+                );
+              })
+            ) : (
+              <>
+                <h4>No sessions to display!</h4>
+              </>
+            )}
+          </div>
+        </>
+      )}
     </>
   );
 };

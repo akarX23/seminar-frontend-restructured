@@ -92,6 +92,21 @@ const getAllColleges = async (cb) => {
     });
 };
 
+const uploadCSV = async (students, courseId, collegeId, cb) => {
+  return await api
+    .post(
+      `/college/upload_csv_to_course?courseId=${courseId}&collegeId=${collegeId}`,
+      { students }
+    )
+    .then((result) => {
+      return cb(result.data);
+    })
+    .catch((err) => {
+      console.log(err);
+      return cb(err);
+    });
+};
+
 export {
   addSessions,
   getUnivCoursesAndSessions,
@@ -100,4 +115,5 @@ export {
   unsubSession,
   getAllUnivs,
   getAllColleges,
+  uploadCSV,
 };

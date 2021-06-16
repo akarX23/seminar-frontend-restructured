@@ -30,7 +30,7 @@ export default (ComposedClass, authUser) => {
     }
 
     render() {
-      if (this.state.loading) return <Loading />;
+      if (this.state.loading) return <Loading fullPage />;
       if (this.state.authRevoke) return <AuthRevoked />;
 
       return (
