@@ -11,18 +11,27 @@ import { theme, userTypes } from "./helpers/utils";
 import AuthPage from "./Containers/AuthPage/authPage";
 import Meeting from "./Containers/Meeting/meeting";
 import MyCourses from "./Containers/MyCourses/myCourses";
+import MySessions from "./Containers/MySessions/mySessions";
+import UploadToDb from "./Containers/UploadToDB/uploadToDb";
 
 const Routes = () => {
   return (
     <ThemeProvider theme={theme}>
       <Switch>
-        <Route path="/login" exact component={Auth(AuthPage, false, false)} />
+        <Route path="/login" exact component={Auth(AuthPage, false)} />
         <Route exact path="/session/:token" component={Meeting} />
         <Route
           exact
           path="/myCourses"
-          component={Auth(MyCourses, userTypes.COLLEGE)}
+          component={Auth(MyCourses, [userTypes.COLLEGE])}
         />
+        <Route
+          exact
+          path="/mySessions"
+          component={Auth(MySessions, [userTypes.COLLEGE, userTypes.STUDENT])}
+        />
+        <Route exact path="/filesToDB" component={UploadToDb} />
+
         <Route path="/" component={Auth(Home)} />
       </Switch>
     </ThemeProvider>

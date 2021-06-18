@@ -18,6 +18,7 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import { collegeAddSessions, logout } from "../../actions/user_actions";
 import BuySessions from "./buySessions";
 import { grey } from "@material-ui/core/colors";
+import TvIcon from "@material-ui/icons/Tv";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -108,6 +109,7 @@ const Header = ({ user: { details, type }, collegeAddSessions, logout }) => {
   const getCollegeDropdownNav = () => {
     const nav = [
       { text: "My Courses", link: "/mycourses", Icon: MenuBookIcon },
+      { text: "My Sessions", link: "/mysessions", Icon: TvIcon },
       {
         text: "Buy Sessions",
         func: () => {

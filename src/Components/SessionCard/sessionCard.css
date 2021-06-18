@@ -29,7 +29,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 6px 5px 0 0;
+  padding: 6px 0 8px 0;
   font-size: 16px;
   flex: 1;
   justify-content: space-between;
@@ -56,8 +56,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 15px 0 0;
-  font-size: 18px;
+  padding: 5px 25px 0 0;
+  font-size: 15px;
 }
 
 .ses-info {
@@ -65,7 +65,7 @@
   flex: 1;
   max-height: 150px;
   padding-right: 10px;
-  margin-bottom: -10px;
+  margin-bottom: -17px;
 }
 
 .desc {
@@ -77,9 +77,17 @@
   align-items: center;
 }
 
+.ses-info-price p {
+  margin: 100 !important;
+}
+
+.ses-action-wrapper p {
+  margin: 0;
+}
+
 .price-tag-icon {
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   margin-right: 10px;
   color: #616161;
 }

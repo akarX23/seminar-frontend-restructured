@@ -13,7 +13,10 @@ import {
   getUnivCoursesAndSessions,
 } from "../../helpers/Apis/college";
 import { getAllSessions } from "../../helpers/Apis/sessions";
-import { getCollegeSponsoredSessions } from "../../helpers/Apis/student";
+import {
+  getCollegeSponsoredSessions,
+  getStudRegSessions,
+} from "../../helpers/Apis/student";
 import SessionCard from "../../Components/SessionCard/SessionCard";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
@@ -86,6 +89,8 @@ const Home = ({ user: { details, type } }) => {
   const [clgSubscribed, setClgSubscribed] = useState([]);
   const [clgSponsored, setClgSponsored] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [studentSub, setStudentSub] = useState([]);
+
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -107,7 +112,10 @@ const Home = ({ user: { details, type } }) => {
             details.collegeId,
             details.id,
             (sesIds) => {
-              setClgSponsored(sesIds);
+              getStudRegSessions(details.id, (sessions) => {
+                setStudentSub([...sessions.map((session) => session.id)]);
+                setClgSponsored(sesIds);
+              });
             }
           );
         }
@@ -209,6 +217,8 @@ const Home = ({ user: { details, type } }) => {
                     sessionsRegistered={clgSubscribed}
                     setSessionsRegistered={setClgSubscribed}
                     collegeSessions={clgSponsored}
+                    studentSubscribedSessions={studentSub}
+                    changeStudentSessions={setStudentSub}
                   />
                 );
               })

@@ -1,4 +1,4 @@
-import { extractSessionIds } from "../utils";
+import { extractSessionIds, extractSessions } from "../utils";
 import api from "./index";
 
 const getCollegeSponsoredSessions = async (collegeId, studentId, cb) => {
@@ -20,4 +20,27 @@ const studentSubscribeSession = async (data, cb) => {
   });
 };
 
-export { getCollegeSponsoredSessions, studentSubscribeSession };
+const getStudRegSessions = async (studentId, cb) => {
+  return await api
+    .get(`/student/stud_reg_sessions?studentId=${studentId}`)
+    .then((result) => {
+      const sessions = extractSessions(result.data);
+      return cb(sessions);
+    });
+};
+
+const studentUnregSession = async ({ studentId, sesId }, cb) => {
+  return await api
+    .get(`/student/stud_unreg_session?studentId=${studentId}&sesId=${sesId}`)
+    .then((result) => {
+      console.log(result);
+      if (result.data.success) cb(result.data.success);
+    });
+};
+
+export {
+  getCollegeSponsoredSessions,
+  studentSubscribeSession,
+  getStudRegSessions,
+  studentUnregSession,
+};

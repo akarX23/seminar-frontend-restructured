@@ -34,7 +34,8 @@ const getCollegeSubscribedSessions = async (collegeId, cb) => {
     .get(`/course/col_sub_sessions?collegeId=${collegeId}`)
     .then((result) => {
       const sessionIds = extractSessionIds(result.data);
-      return cb(sessionIds);
+      const sessions = extractSessions(result.data);
+      return cb(sessionIds, sessions);
     })
     .catch((err) => {
       console.log(err);

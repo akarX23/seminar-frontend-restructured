@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./sessionCard.css";
 import img1 from "../../assets/images/img1.png";
 import { userTypes } from "../../helpers/utils";
@@ -6,18 +6,23 @@ import {
   collegeSubscribeSesion,
   unsubSession,
 } from "../../helpers/Apis/college";
-import { studentSubscribeSession } from "../../helpers/Apis/student";
+import {
+  studentSubscribeSession,
+  studentUnregSession,
+} from "../../helpers/Apis/student";
 import { changeSessionCount } from "../../actions/user_actions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { Button, makeStyles } from "@material-ui/core";
+import Loading from "../../WidgetsUI/Loading/loading";
+import { blueGrey } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
   link: {
     color: theme.palette.info.main,
     textDecoration: "underline !important",
     "&:hover": { color: theme.palette.info.dark },
-    fontSize: 18,
+    fontSize: 15,
   },
   action: {
     borderRadius: 6,
@@ -29,6 +34,10 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       backgroundColor: theme.palette.secondary.dark,
     },
+  },
+  loaderStyles: {
+    color: blueGrey[800],
+    margin: 0,
   },
 }));
 
@@ -47,13 +56,19 @@ const SessionCard = ({
   collegeSessions,
   user: { details, type },
   changeSessionCount,
+  studentSubscribedSessions,
+  changeStudentSessions,
 }) => {
   const classes = useStyles();
 
+  const [actionLoad, setActionLoad] = useState(false);
+
   const subscribeSession = async (sessionId) => {
+    setActionLoad(true);
     const { session_count } = details;
     if (session_count < 1) {
       alert("You don't have enough session credits!");
+      setActionLoad(false);
       return;
     }
 
@@ -66,22 +81,43 @@ const SessionCard = ({
           await changeSessionCount(session_count - 1);
           setSessionsRegistered([...sessionsRegistered, sessionId]);
         } else alert("Something went wrong");
+        setActionLoad(false);
       }
     );
   };
 
-  const studentRegisterSession = (sesId) => {
-    studentSubscribeSession(
+  const studentRegisterSession = async (sesId) => {
+    setActionLoad(true);
+    await studentSubscribeSession(
       { sesId, courseId, studentId: details.id },
       (response) => {
-        if (response.success) alert("Meeting link sent!");
-        else alert("Somehting went wrong!");
+        if (response.success) {
+          changeStudentSessions([...studentSubscribedSessions, sesId]);
+        } else alert("Somehting went wrong!");
+        setActionLoad(false);
       }
     );
+  };
+
+  const studentUnregisterSession = (sesId) => {
+    setActionLoad(true);
+    studentUnregSession({ sesId, studentId: details.id }, (success) => {
+      if (!success) {
+        alert("Something went wrong!");
+        return;
+      }
+
+      let filteredSessions = studentSubscribedSessions.filter(
+        (sessionId) => sesId !== sessionId
+      );
+      changeStudentSessions(filteredSessions);
+      setActionLoad(false);
+    });
   };
 
   const clgUnsubSession = async (sesId) => {
     const { session_count } = details;
+    setActionLoad(true);
 
     await unsubSession(details.id, sesId, async (deleteResponse) => {
       if (deleteResponse) {
@@ -93,6 +129,7 @@ const SessionCard = ({
       } else {
         alert("Something went wrong!");
       }
+      setActionLoad(false);
     });
   };
 
@@ -101,13 +138,15 @@ const SessionCard = ({
       return (
         <p>
           <a className={classes.link} href="/login">
-            Log In{" "}
-          </a>
+            Log In
+          </a>{" "}
           to register
         </p>
       );
 
     const sessionJoined = sessionsRegistered?.includes(id);
+    const studSub = studentSubscribedSessions?.includes(id);
+
     if (type === userTypes.COLLEGE && !sessionJoined) {
       return (
         <Button className={classes.action} onClick={() => subscribeSession(id)}>
@@ -120,13 +159,22 @@ const SessionCard = ({
           Unsubscribe
         </Button>
       );
-    } else if (type === userTypes.STUDENT) {
+    } else if (type === userTypes.STUDENT && !studSub) {
       return (
         <Button
           className={classes.action}
           onClick={() => studentRegisterSession(id)}
         >
           Register
+        </Button>
+      );
+    } else if (type === userTypes.STUDENT && studSub) {
+      return (
+        <Button
+          className={classes.action}
+          onClick={() => studentUnregisterSession(id)}
+        >
+          Unregister
         </Button>
       );
     }
@@ -174,10 +222,12 @@ const SessionCard = ({
     <div className="ses-card-wrapper">
       <img src={img1} className="ses-card-img right-margin" />
       <div className="ses-card-content">
-        <h5 className="ses-info-topic">
-          <b>{topic.trim()}</b>
-        </h5>
-        <div className="divider" />
+        <div>
+          <h5 className="ses-info-topic">
+            <b>{topic.trim()}</b>
+          </h5>
+          <div className="divider" />
+        </div>
         <div className="ses-info">
           {combineDescription()}
           <p className="ses-info-text">
@@ -199,7 +249,13 @@ const SessionCard = ({
         </div>
         <div className="ses-action-wrapper">
           {getPriceType()}
-          {sessionAction()}
+          {actionLoad ? (
+            <div>
+              <Loading loaderStyles={classes.loaderStyles} size={19} />
+            </div>
+          ) : (
+            sessionAction()
+          )}
         </div>
       </div>
     </div>

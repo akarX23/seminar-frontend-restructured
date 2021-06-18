@@ -7,7 +7,7 @@ import Loading from "../WidgetsUI/Loading/loading";
 import { userTypes } from "../helpers/utils";
 import Layout from "./layout";
 
-export default (ComposedClass, authUser) => {
+export default (ComposedClass, authUsers = null) => {
   class AuthenticationCheck extends Component {
     state = {
       loading: true,
@@ -22,11 +22,19 @@ export default (ComposedClass, authUser) => {
       this.setState({ loading: false });
       const { details, type } = nextProps.user;
 
-      if ((!details && authUser) || (details && authUser === false))
-        this.props.history.push("/");
-      else if (authUser && type !== userTypes[authUser.toUpperCase()]) {
+      // authUsers => true, false, array of user types. null
+      console.log(details);
+      console.log(authUsers);
+      console.log(type);
+      if (details && authUsers === false) this.props.history.push("/");
+      else if (
+        !details &&
+        authUsers !== null &&
+        (authUsers === true || authUsers.length > 0)
+      ) {
         this.setState({ authRevoke: true });
-      }
+      } else if (details && authUsers?.length && !authUsers.includes(type))
+        this.setState({ authRevoke: true });
     }
 
     render() {
