@@ -114,7 +114,7 @@ const Header = ({ user: { details, type }, collegeAddSessions, logout }) => {
         text: "Buy Sessions",
         func: () => {
           setShowBuySession(true);
-          setShowMenu(null);
+          setShowMenu(false);
         },
         Icon: ShoppingBasketIcon,
       },

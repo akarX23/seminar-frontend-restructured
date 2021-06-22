@@ -22,6 +22,8 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import Loading from "../../WidgetsUI/Loading/loading";
 
+import { useHistory } from "react-router-dom";
+
 const useStyles = makeStyles((theme) => ({
   header: {
     backgroundColor: theme.palette.primary.main,
@@ -83,6 +85,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = ({ user: { details, type } }) => {
   const classes = useStyles();
+  const history = useHistory();
 
   const [sessions, setSessions] = useState([]);
   const [dislpaySessions, setDislpaySessions] = useState([]);
@@ -211,15 +214,22 @@ const Home = ({ user: { details, type } }) => {
             {dislpaySessions !== undefined && dislpaySessions.length !== 0 ? (
               dislpaySessions.map((session, i) => {
                 return (
-                  <SessionCard
+                  <div
+                    style={{ width: "100%", cursor: "pointer" }}
+                    // onClick={() =>
+                    //   history.push(`/session/details/${session.id}`)
+                    // }
                     key={session.id}
-                    {...session}
-                    sessionsRegistered={clgSubscribed}
-                    setSessionsRegistered={setClgSubscribed}
-                    collegeSessions={clgSponsored}
-                    studentSubscribedSessions={studentSub}
-                    changeStudentSessions={setStudentSub}
-                  />
+                  >
+                    <SessionCard
+                      {...session}
+                      sessionsRegistered={clgSubscribed}
+                      setSessionsRegistered={setClgSubscribed}
+                      collegeSessions={clgSponsored}
+                      studentSubscribedSessions={studentSub}
+                      changeStudentSessions={setStudentSub}
+                    />
+                  </div>
                 );
               })
             ) : (

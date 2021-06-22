@@ -20,6 +20,7 @@ import { signUp } from "../../helpers/Apis/user";
 import { signInAction } from "../../actions/user_actions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import LanguageIcon from "@material-ui/icons/Language";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -52,7 +53,6 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
   },
   menuContain: {
-    color: "white",
     padding: "10px",
     backgroundColor: `${theme.palette.common.white} !important`,
     color: theme.palette.common.black + " !important",
@@ -115,6 +115,8 @@ const AuthForm = ({ loginActive, signInAction }) => {
     phone: "",
     branch: "",
     year: "",
+    clg_url: "",
+    rep_name: "",
   });
 
   useEffect(() => {
@@ -217,17 +219,16 @@ const AuthForm = ({ loginActive, signInAction }) => {
         classes={{ root: classes.inputField }}
         onChange={(event) => handleInputChange(inputName, event.target.value)}
         InputProps={{
-          //   disableUnderline: true,
           className: classes.input,
           startAdornment: StartIcon ? (
             <InputAdornment position="start">
-              <StartIcon size="small" />
+              <StartIcon />
             </InputAdornment>
           ) : null,
           endAdornment: EndIcon ? (
             <InputAdornment position="end">
               <IconButton>
-                <EndIcon size="small" />
+                <EndIcon />
               </IconButton>
             </InputAdornment>
           ) : null,
@@ -269,7 +270,22 @@ const AuthForm = ({ loginActive, signInAction }) => {
       </div>
       <div className="fields-wrapper">
         {!loginActive &&
-          renderInput("Full Name", "text", "name", "Name", PersonIcon)}
+          userType === userTypes.COLLEGE &&
+          renderInput(
+            "Representative Name",
+            "text",
+            "rep_name",
+            "Representative",
+            PersonIcon
+          )}
+        {!loginActive &&
+          renderInput(
+            userType === userTypes.COLLEGE ? "College Name" : "Full Name",
+            "text",
+            "name",
+            "Name",
+            PersonIcon
+          )}
         {renderInput(
           "Email ID",
           "email",
@@ -294,6 +310,15 @@ const AuthForm = ({ loginActive, signInAction }) => {
         {userType === userTypes.STUDENT &&
           !loginActive &&
           renderInput("Year", "text", "year", "1", AccessTimeIcon)}
+        {userType === userTypes.COLLEGE &&
+          !loginActive &&
+          renderInput(
+            "College URL",
+            "text",
+            "clg_url",
+            "https://college.com",
+            LanguageIcon
+          )}
       </div>
       <Button variant="contained" type="submit" className={classes.action}>
         {loginActive ? "Sign In" : "Sign Up"}

@@ -4,9 +4,10 @@ import Button from "@material-ui/core/Button";
 import { CSVReader } from "react-papaparse";
 import "./courseCard.css";
 import { makeStyles } from "@material-ui/core";
+import { grey } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
-  upload: {
+  action: {
     backgroundColor: theme.palette.secondary.main,
     color: theme.palette.common.white + " !important",
     "&:hover": {
@@ -15,9 +16,22 @@ const useStyles = makeStyles((theme) => ({
     padding: "6px 10px 6px",
     marginTop: 10,
   },
+  disabled: {
+    backgroundColor: grey[700],
+    color: theme.palette.common.black,
+  },
 }));
 
-const CourseCard = ({ userDetails, course, csvCourses, uploadStudents }) => {
+const CourseCard = ({
+  userDetails,
+  course,
+  csvCourses,
+  uploadStudents,
+  selected,
+  selectCourse,
+  courseData,
+  selectedCourses,
+}) => {
   const { id, name, thumbnail_img } = course;
 
   const classes = useStyles();
@@ -36,29 +50,46 @@ const CourseCard = ({ userDetails, course, csvCourses, uploadStudents }) => {
       : "Upload Students";
   };
 
+  const isSelected = () => {
+    if (selectedCourses.find((course) => course.id === id)) return true;
+    return false;
+  };
+
   return (
     <div className="card">
       <img src={img1} className="card-img-top" alt={name + id + " image"} />
       <div className="card-body">
         <h5 className="card-title">{name}</h5>
-        <CSVReader
-          ref={buttonRef}
-          onFileLoad={(data) => {
-            data = data.map((data) => data.data);
-            uploadStudents(data, id);
-          }}
-          config={{
-            header: true,
-            dynamicTyping: true,
-            skipEmptyLines: true,
-          }}
-        >
-          {({ file }) => (
-            <Button onClick={handleOpenDialog} className={classes.upload}>
-              {getUploadText()}
-            </Button>
-          )}
-        </CSVReader>
+        <p>Students Uploaded : {courseData.studentCount}</p>
+        <p>Sessions Subscribed : {courseData.sessionCount}</p>
+        {selected ? (
+          <CSVReader
+            ref={buttonRef}
+            onFileLoad={(data) => {
+              data = data.map((data) => data.data);
+              uploadStudents(data, id);
+            }}
+            config={{
+              header: true,
+              dynamicTyping: true,
+              skipEmptyLines: true,
+            }}
+          >
+            {({ file }) => (
+              <Button onClick={handleOpenDialog} className={classes.action}>
+                {getUploadText()}
+              </Button>
+            )}
+          </CSVReader>
+        ) : (
+          <Button
+            onClick={() => selectCourse(id)}
+            classes={{ root: classes.action, disabled: classes.disabled }}
+            disabled={isSelected()}
+          >
+            {isSelected() ? "Already Added" : "ADD to Courses"}
+          </Button>
+        )}
       </div>
     </div>
   );

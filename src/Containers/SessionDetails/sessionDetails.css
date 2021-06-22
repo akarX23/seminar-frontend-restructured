@@ -1,0 +1,29 @@
+.details-container {
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.carousel {
+  max-width: 600px;
+}
+
+.date,
+.price {
+  display: flex;
+  align-items: center;
+}
+
+.date p,
+.price p {
+  margin-left: 10px;
+  font-weight: bold;
+}
+
+.schedule,
+.price-container {
+  display: flex;
+  flex-wrap: wrap;
+}

@@ -226,16 +226,14 @@ const SessionCard = ({
           <h5 className="ses-info-topic">
             <b>{topic.trim()}</b>
           </h5>
-          <div className="divider" />
+          <hr />
         </div>
         <div className="ses-info">
-          {combineDescription()}
-          <p className="ses-info-text">
-            {speaker ? speaker.name : "Speaker is not yet assigned"}
-          </p>
+          {/* {combineDescription()} */}
+          <p className="ses-info-text">{speaker && speaker.name}</p>
           {subject && (
             <p className="ses-info-text">
-              <b>Subject : </b>
+              {/* <b>Subject : </b> */}
               {subject}
             </p>
           )}

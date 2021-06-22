@@ -21,8 +21,8 @@ const extractCourses = (detailedArray) => {
   let courses = [];
 
   detailedArray.forEach((details) => {
-    if (!courseIds.includes(details.course.id)) {
-      courseIds.push(details.course.id);
+    if (!courseIds.includes(details.courseId)) {
+      courseIds.push(details.courseId);
       courses.push(details.course);
     }
   });
@@ -34,9 +34,9 @@ const extractSessions = (detailedArray) => {
   const sessions = [];
   let sessionIds = [];
   detailedArray.forEach((details) => {
-    if (details.session && sessionIds.includes(details.session.id) === false) {
+    if (details.session && sessionIds.includes(details.sessionId) === false) {
       sessions.push({ ...details.session, courseId: details.courseId });
-      sessionIds.push(details.session.id);
+      sessionIds.push(details.sessionId);
     }
   });
 
@@ -45,9 +45,23 @@ const extractSessions = (detailedArray) => {
 
 const extractSessionIds = (detailedArray) => {
   let sessionIds = [];
-  sessionIds = detailedArray.map((details) => details.session.id);
+  sessionIds = detailedArray.map((details) => details.sessionId);
   sessionIds = [...new Set(sessionIds)];
   return sessionIds;
 };
 
-export { userTypes, theme, extractCourses, extractSessions, extractSessionIds };
+const extractCourseIds = (detailedArray) => {
+  let courseIds = [];
+  courseIds = detailedArray.map((details) => details.courseId);
+  courseIds = [...new Set(courseIds)];
+  return courseIds;
+};
+
+export {
+  userTypes,
+  theme,
+  extractCourses,
+  extractSessions,
+  extractSessionIds,
+  extractCourseIds,
+};

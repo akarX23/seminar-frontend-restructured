@@ -7,7 +7,6 @@ import { blueGrey } from "@material-ui/core/colors";
 const useStyles = makeStyles((theme) => ({
   loading: {
     color: blueGrey[800],
-    marginTop: 30,
   },
 }));
 
@@ -17,7 +16,7 @@ const Loading = ({ fullPage, loaderStyles, size }) => {
   return (
     <div className={fullPage ? "full-page-loading" : "part-loading"}>
       <CircularProgress
-        size={size ? size : 35}
+        size={size ? size : 50}
         className={loaderStyles ? loaderStyles : classes.loading}
       />
     </div>
