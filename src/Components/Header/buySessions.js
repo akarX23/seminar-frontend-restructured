@@ -6,6 +6,8 @@ import CloseIcon from "@material-ui/icons/Close";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import { grey } from "@material-ui/core/colors";
+import useRazorpay from "../../helpers/useRazorpay";
+import { sesCreditAmount } from "../../helpers/utils";
 
 const useStyles = makeStyles((theme) => ({
   dialog: {
@@ -46,10 +48,41 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BuySessions = ({ open, buySessions, closeDialog }) => {
+const BuySessions = ({ open, onTransactionComplete, closeDialog, details }) => {
   const classes = useStyles();
+  const handlePayment = useRazorpay();
 
-  const [sessionCount, setSessionCount] = useState("");
+  const [sessionCount, setSessionCount] = useState(0);
+
+  const initiateSessionTransaction = () => {
+    if (sessionCount < 1) {
+      return;
+    }
+
+    handlePayment(
+      // amount and receipt_id required
+      {
+        amount: sesCreditAmount * sessionCount,
+        currency: "INR",
+        currencyMultiplier: 100,
+        receipt_id: "receipt#!",
+      },
+      // Properties of the modal
+      {
+        name: details.name,
+        description: "Buy Session Credits",
+        prefill: {
+          name: details.rep_name,
+          email: details.email,
+          contact: details.phone,
+        },
+      },
+      // When user closes the modal, this function has to be called
+      () => closeDialog(false),
+      // On successfull payment this is called
+      (verifiedData) => onTransactionComplete(sessionCount, verifiedData)
+    );
+  };
 
   return (
     <Dialog
@@ -71,12 +104,13 @@ const BuySessions = ({ open, buySessions, closeDialog }) => {
           placeholder="Add..."
           classes={{ root: classes.input }}
           InputProps={{ classes: { input: classes.input } }}
-          value={sessionCount}
+          value={sessionCount === 0 ? "" : sessionCount}
           onChange={(event) => setSessionCount(event.target.value)}
           type="number"
+          autoFocus
         />
         <Button
-          onClick={() => buySessions(sessionCount)}
+          onClick={initiateSessionTransaction}
           color="primary"
           variant="contained"
         >

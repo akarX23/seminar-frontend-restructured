@@ -57,6 +57,8 @@ const extractCourseIds = (detailedArray) => {
   return courseIds;
 };
 
+const sesCreditAmount=200;
+
 export {
   userTypes,
   theme,
@@ -64,4 +66,5 @@ export {
   extractSessions,
   extractSessionIds,
   extractCourseIds,
+  sesCreditAmount
 };

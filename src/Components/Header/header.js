@@ -129,12 +129,12 @@ const Header = ({ user: { details, type }, collegeAddSessions, logout }) => {
     return nav;
   };
 
-  const handleBuySessions = async (number_of_sessions) => {
-    // Temporary condition. Check will performed while submitting
-    if (number_of_sessions < 1 || number_of_sessions === "") {
+  const handleBuySessions = async (number_of_sessions, verifiedData) => {
+    if (!verifiedData) {
+      alert("Your transaction timed out!");
+      setShowBuySession(false);
       return;
     }
-
     await collegeAddSessions(details?.id, number_of_sessions);
     setShowBuySession(false);
   };
@@ -213,7 +213,8 @@ const Header = ({ user: { details, type }, collegeAddSessions, logout }) => {
             <BuySessions
               open={showBuySession}
               closeDialog={setShowBuySession}
-              buySessions={handleBuySessions}
+              onTransactionComplete={handleBuySessions}
+              details={details}
             />
           </>
         )}

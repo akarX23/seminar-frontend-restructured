@@ -5,9 +5,9 @@ import {
   extractSessions,
 } from "../utils";
 import api from "./index";
-
+ 
 const addSessions = async (sessions_bought, collegeId, cb) => {
-  return await api
+  return await api 
     .put(`/college/buy_sessions?collegeId=${collegeId}`, {
       sessions_bought,
     })
@@ -16,7 +16,7 @@ const addSessions = async (sessions_bought, collegeId, cb) => {
     })
     .catch((err) => {
       console.log(err);
-      return cb(null);
+       return cb(null);
     });
 };
 
