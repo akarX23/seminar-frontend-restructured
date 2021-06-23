@@ -16,6 +16,7 @@ import { connect } from "react-redux";
 import { Button, makeStyles } from "@material-ui/core";
 import Loading from "../../WidgetsUI/Loading/loading";
 import { blueGrey } from "@material-ui/core/colors";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   link: {
@@ -58,8 +59,11 @@ const SessionCard = ({
   changeSessionCount,
   studentSubscribedSessions,
   changeStudentSessions,
+  key,
 }) => {
   const classes = useStyles();
+
+  const history = useHistory();
 
   const [actionLoad, setActionLoad] = useState(false);
 
@@ -218,17 +222,23 @@ const SessionCard = ({
     );
   };
 
+  const redirect = () => history.push(`/session/details/${id}`);
+
   return (
-    <div className="ses-card-wrapper">
-      <img src={img1} className="ses-card-img right-margin" />
+    <div className="ses-card-wrapper" key={key}>
+      <img
+        src={img1}
+        className="ses-card-img right-margin"
+        onClick={redirect}
+      />
       <div className="ses-card-content">
-        <div>
+        <div onClick={redirect}>
           <h5 className="ses-info-topic">
             <b>{topic.trim()}</b>
           </h5>
           <hr />
         </div>
-        <div className="ses-info">
+        <div className="ses-info" onClick={redirect}>
           {/* {combineDescription()} */}
           <p className="ses-info-text">{speaker && speaker.name}</p>
           {subject && (
@@ -245,7 +255,10 @@ const SessionCard = ({
             {schedule_info ? schedule_info : "Not yet Scheduled"}
           </p>
         </div>
-        <div className="ses-action-wrapper">
+        <div
+          className="ses-action-wrapper"
+          onClick={(event) => event.preventDefault()}
+        >
           {getPriceType()}
           {actionLoad ? (
             <div>

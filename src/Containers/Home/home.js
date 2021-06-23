@@ -22,8 +22,6 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import Loading from "../../WidgetsUI/Loading/loading";
 
-import { useHistory } from "react-router-dom";
-
 const useStyles = makeStyles((theme) => ({
   header: {
     backgroundColor: theme.palette.primary.main,
@@ -85,10 +83,9 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = ({ user: { details, type } }) => {
   const classes = useStyles();
-  const history = useHistory();
 
   const [sessions, setSessions] = useState([]);
-  const [dislpaySessions, setDislpaySessions] = useState([]);
+  const [dislpaySessions, setDisplaySessions] = useState([]);
   const [clgSubscribed, setClgSubscribed] = useState([]);
   const [clgSponsored, setClgSponsored] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -103,7 +100,7 @@ const Home = ({ user: { details, type } }) => {
         getCollegeSubscribedSessions(details.id, (sessionIds) => {
           setCourses(courses);
           setSessions(sessions);
-          setDislpaySessions(sessions);
+          formatSessionList(sessions);
           setClgSubscribed(sessionIds);
           setLoading(false);
         });
@@ -123,15 +120,34 @@ const Home = ({ user: { details, type } }) => {
           );
         }
         setSessions(sessions);
-        setDislpaySessions(sessions);
+        formatSessionList(sessions);
         setLoading(false);
       });
     }
   }, []);
 
+  const formatSessionList = (newList) => {
+    console.log(newList);
+    let subbedIds = [];
+    let modifiedList = [];
+    if (type === userTypes.COLLEGE) subbedIds = [...clgSubscribed];
+    else if (type === userTypes.STUDENT) subbedIds = [...studentSub];
+
+    modifiedList = [
+      ...newList.filter(
+        (session) => !session.price && !subbedIds.includes(session.id)
+      ),
+      ...newList.filter(
+        (session) => session.price && !subbedIds.includes(session.id)
+      ),
+    ];
+
+    setDisplaySessions(modifiedList);
+  };
+
   const changeDisplayList = (type, action, courseId) => {
     if (action === "all") {
-      setDislpaySessions([...sessions]);
+      formatSessionList([...sessions]);
       return;
     }
 
@@ -146,12 +162,12 @@ const Home = ({ user: { details, type } }) => {
           clgSponsored.includes(session.id)
         );
 
-      setDislpaySessions([...newList]);
+      formatSessionList([...newList]);
     } else {
       console.log(courseId);
-      if (!courseId) setDislpaySessions([...sessions]);
+      if (!courseId) formatSessionList([...sessions]);
       else
-        setDislpaySessions([
+        formatSessionList([
           ...sessions.filter((session) => session.courseId === courseId),
         ]);
     }
@@ -160,7 +176,7 @@ const Home = ({ user: { details, type } }) => {
   const handleSearch = (event) => {
     event.preventDefault();
     setSearchText(event.target.value);
-    setDislpaySessions(
+    formatSessionList(
       sessions.filter(
         (item) => item.topic.toLowerCase().includes(event.target.value) === true
       )
@@ -214,22 +230,15 @@ const Home = ({ user: { details, type } }) => {
             {dislpaySessions !== undefined && dislpaySessions.length !== 0 ? (
               dislpaySessions.map((session, i) => {
                 return (
-                  <div
-                    style={{ width: "100%", cursor: "pointer" }}
-                    // onClick={() =>
-                    //   history.push(`/session/details/${session.id}`)
-                    // }
-                    key={session.id}
-                  >
-                    <SessionCard
-                      {...session}
-                      sessionsRegistered={clgSubscribed}
-                      setSessionsRegistered={setClgSubscribed}
-                      collegeSessions={clgSponsored}
-                      studentSubscribedSessions={studentSub}
-                      changeStudentSessions={setStudentSub}
-                    />
-                  </div>
+                  <SessionCard
+                    {...session}
+                    sessionsRegistered={clgSubscribed}
+                    setSessionsRegistered={setClgSubscribed}
+                    collegeSessions={clgSponsored}
+                    studentSubscribedSessions={studentSub}
+                    changeStudentSessions={setStudentSub}
+                    key={i}
+                  />
                 );
               })
             ) : (

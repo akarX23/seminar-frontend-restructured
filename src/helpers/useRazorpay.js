@@ -2,11 +2,18 @@ import { createOrder, verifyPayment } from "./Apis/payments";
 
 const useRazorpay = () => {
   const handlePayment = async (
-    dataToBeSent,
+    {
+      amount = 0,
+      currency = "INR",
+      currencyMultiplier = 100,
+      receipt_id = "receipt#!",
+    },
     optionsForTheModal,
     dismissModal,
     capturePayment
   ) => {
+    let dataToBeSent = { amount, currency, currencyMultiplier, receipt_id };
+
     // Creating a new order
     await createOrder(dataToBeSent, (order) => {
       if (!order) {

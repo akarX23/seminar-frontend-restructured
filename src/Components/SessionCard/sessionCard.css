@@ -9,6 +9,7 @@
   align-items: stretch;
   border-radius: 10px;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .right-margin {
@@ -58,6 +59,7 @@
   align-items: center;
   padding: 5px 0 0 0;
   font-size: 15px;
+  cursor: default;
 }
 
 .ses-info {

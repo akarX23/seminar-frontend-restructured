@@ -63,9 +63,6 @@ const BuySessions = ({ open, onTransactionComplete, closeDialog, details }) => {
       // amount and receipt_id required
       {
         amount: sesCreditAmount * sessionCount,
-        currency: "INR",
-        currencyMultiplier: 100,
-        receipt_id: "receipt#!",
       },
       // Properties of the modal
       {

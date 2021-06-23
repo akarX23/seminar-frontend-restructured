@@ -34,7 +34,7 @@ const extractSessions = (detailedArray) => {
   const sessions = [];
   let sessionIds = [];
   detailedArray.forEach((details) => {
-    if (details.session && sessionIds.includes(details.sessionId) === false) {
+    if (details.session && sessionIds.includes(details.sesId) === false) {
       sessions.push({ ...details.session, courseId: details.courseId });
       sessionIds.push(details.sessionId);
     }
@@ -57,7 +57,7 @@ const extractCourseIds = (detailedArray) => {
   return courseIds;
 };
 
-const sesCreditAmount=200;
+const sesCreditAmount = 200;
 
 export {
   userTypes,
@@ -66,5 +66,5 @@ export {
   extractSessions,
   extractSessionIds,
   extractCourseIds,
-  sesCreditAmount
+  sesCreditAmount,
 };
