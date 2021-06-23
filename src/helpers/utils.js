@@ -36,7 +36,7 @@ const extractSessions = (detailedArray) => {
   detailedArray.forEach((details) => {
     if (details.session && sessionIds.includes(details.sesId) === false) {
       sessions.push({ ...details.session, courseId: details.courseId });
-      sessionIds.push(details.sessionId);
+      sessionIds.push(details.sesId);
     }
   });
 
@@ -45,7 +45,7 @@ const extractSessions = (detailedArray) => {
 
 const extractSessionIds = (detailedArray) => {
   let sessionIds = [];
-  sessionIds = detailedArray.map((details) => details.sessionId);
+  sessionIds = detailedArray.map((details) => details.sesId);
   sessionIds = [...new Set(sessionIds)];
   return sessionIds;
 };

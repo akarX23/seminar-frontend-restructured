@@ -60,8 +60,16 @@ const CourseCard = ({
       <img src={img1} className="card-img-top" alt={name + id + " image"} />
       <div className="card-body">
         <h5 className="card-title">{name}</h5>
-        <p>Students Uploaded : {courseData.studentCount}</p>
-        <p>Sessions Subscribed : {courseData.sessionCount}</p>
+        {selected && (
+          <>
+            <p>
+              Students Uploaded : {courseData ? courseData.studentCount : 0}
+            </p>
+            <p>
+              Sessions Subscribed : {courseData ? courseData.sessionCount : 0}
+            </p>
+          </>
+        )}
         {selected ? (
           <CSVReader
             ref={buttonRef}

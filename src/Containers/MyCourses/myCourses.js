@@ -94,6 +94,7 @@ const MyCourses = ({ user: { details, type } }) => {
       });
     } else {
       getClgCourses(details.id, (selectedCourses, coursesData) => {
+        console.log(coursesData);
         setClgCourses([...selectedCourses]);
         setDisplay([...selectedCourses]);
         setCoursesData([...coursesData]);

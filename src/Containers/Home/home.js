@@ -119,6 +119,7 @@ const Home = ({ user: { details, type } }) => {
             }
           );
         }
+        console.log(sessions);
         setSessions(sessions);
         formatSessionList(sessions);
         setLoading(false);
@@ -127,19 +128,19 @@ const Home = ({ user: { details, type } }) => {
   }, []);
 
   const formatSessionList = (newList) => {
-    console.log(newList);
     let subbedIds = [];
     let modifiedList = [];
     if (type === userTypes.COLLEGE) subbedIds = [...clgSubscribed];
     else if (type === userTypes.STUDENT) subbedIds = [...studentSub];
 
     modifiedList = [
-      ...newList.filter(
+      ...newList?.filter(
         (session) => !session.price && !subbedIds.includes(session.id)
       ),
-      ...newList.filter(
+      ...newList?.filter(
         (session) => session.price && !subbedIds.includes(session.id)
       ),
+      ...newList?.filter((session) => subbedIds.includes(session.id)),
     ];
 
     setDisplaySessions(modifiedList);
