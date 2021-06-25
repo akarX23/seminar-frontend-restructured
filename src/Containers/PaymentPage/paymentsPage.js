@@ -150,7 +150,7 @@ const PaymentsPage = ({ user: { details, type }, collegeSubscribesPlan }) => {
 
   return (
     <div className="padding-alignment">
-      {details.planId ? (
+      {details.planId !== null ? (
         <h2>You current plan : {paymentPlans[details.planId].planName}</h2>
       ) : (
         <h2>You haven't subscribed to any plans yet.</h2>
