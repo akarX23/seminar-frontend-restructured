@@ -134,7 +134,7 @@ const PaymentsPage = ({ user: { details, type }, collegeSubscribesPlan }) => {
             />
           </p>
         </div>
-        {getPriceOfOwnedSessions(planId) > 0 && (
+        {getPriceOfOwnedSessions(planId) !== 0 && (
           <div className="price-calc">
             <p>Extra amount for sessions present</p>
             <p>{getFormattedPrice(getPriceOfOwnedSessions(planId))}</p>

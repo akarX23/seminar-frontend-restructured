@@ -14,6 +14,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import PhoneIcon from "@material-ui/icons/Phone";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import VisibilityOffIcon from "@material-ui/icons/VisibilityOff";
+import VisibilityIcon from "@material-ui/icons/Visibility";
 import BookIcon from "@material-ui/icons/Book";
 import AccessTimeIcon from "@material-ui/icons/AccessTime";
 import { signUp } from "../../helpers/Apis/user";
@@ -92,8 +93,17 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.secondary.dark,
     },
     color: theme.palette.getContrastText(theme.palette.secondary.dark),
-    float: "right",
     marginTop: 40,
+  },
+  formAction: {
+    display: "flex",
+    justifyContent: "space-between",
+    "& a": {
+      color: theme.palette.grey[800],
+      textDecoration: "underline",
+    },
+    width: "100%",
+    alignItems: "flex-end",
   },
 }));
 
@@ -118,6 +128,7 @@ const AuthForm = ({ loginActive, signInAction }) => {
     clg_url: "",
     rep_name: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (userType === userTypes.COLLEGE) {
@@ -206,7 +217,8 @@ const AuthForm = ({ loginActive, signInAction }) => {
     inputName,
     placeholder,
     StartIcon,
-    EndIcon
+    EndIcon,
+    endIconFunction
   ) => (
     <div className={classes.inputWrapper}>
       <p>{label}</p>
@@ -227,7 +239,7 @@ const AuthForm = ({ loginActive, signInAction }) => {
           ) : null,
           endAdornment: EndIcon ? (
             <InputAdornment position="end">
-              <IconButton>
+              <IconButton onClick={endIconFunction}>
                 <EndIcon />
               </IconButton>
             </InputAdornment>
@@ -298,11 +310,12 @@ const AuthForm = ({ loginActive, signInAction }) => {
           renderInput("Phone Number", "text", "phone", "1234567890", PhoneIcon)}
         {renderInput(
           "Password",
-          "password",
+          showPassword ? "text" : "password",
           "password",
           "vrgt123",
           VpnKeyIcon,
-          VisibilityOffIcon
+          showPassword ? VisibilityIcon : VisibilityOffIcon,
+          () => setShowPassword(!showPassword)
         )}
         {userType === userTypes.STUDENT &&
           !loginActive &&
@@ -320,9 +333,12 @@ const AuthForm = ({ loginActive, signInAction }) => {
             LanguageIcon
           )}
       </div>
-      <Button variant="contained" type="submit" className={classes.action}>
-        {loginActive ? "Sign In" : "Sign Up"}
-      </Button>
+      <div className={classes.formAction}>
+        {loginActive ? <a href="#">Forgot Password?</a> : <div></div>}
+        <Button variant="contained" type="submit" className={classes.action}>
+          {loginActive ? "Sign In" : "Sign Up"}
+        </Button>
+      </div>
     </form>
   );
 };

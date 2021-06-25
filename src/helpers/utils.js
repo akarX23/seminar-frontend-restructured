@@ -10,7 +10,7 @@ var formatter = new Intl.NumberFormat("en-US", {
 
 const userTypes = {
   COLLEGE: "college",
-  SPEAKER: "college",
+  SPEAKER: "speaker",
   ADMIN: "admin",
   STUDENT: "student",
 };

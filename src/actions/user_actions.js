@@ -6,37 +6,46 @@ import {
   SUBSCRIBE_PLAN,
 } from "../helpers/ACTION_TYPES.js";
 import { addSessions, subscribeToPlan } from "../helpers/Apis/college.js";
-import { signIn } from "../helpers/Apis/user";
+import { authDetails, signIn, logout } from "../helpers/Apis/user";
 
 export async function auth() {
-  const details = JSON.parse(localStorage.getItem("userDetails"));
-  const type = localStorage.getItem("userType");
+  return async function (dispatch) {
+    authDetails((err, user) => {
+      if (err)
+        return dispatch({
+          type: USER_AUTH,
+          payload: { details: null, type: null },
+        });
 
-  return {
-    type: USER_AUTH,
-    payload: { details, type },
+      return dispatch({
+        type: USER_AUTH,
+        payload: { details: user.userDetails, type: user.userType },
+      });
+    });
   };
 }
 
-export async function logout() {
-  localStorage.removeItem("userType");
-  localStorage.removeItem("userDetails");
-
-  return {
-    type: USER_AUTH,
-    payload: { details: null, type: null },
+export async function logoutAction() {
+  return async function (dispatch) {
+    logout((err, data) => {
+      if (!err)
+        dispatch({
+          type: USER_AUTH,
+          payload: { details: null, type: null },
+        });
+    });
   };
 }
 
 export async function signInAction(userType, userDetails) {
   return function (dispatch) {
-    signIn(userType, userDetails, (details) => {
-      if (!details) return;
+    signIn(userType, userDetails, (user) => {
+      console.log(user);
+      if (!user) return;
+      const details = user.userDetails;
+      const type = user.userType;
 
-      localStorage.setItem("userDetails", JSON.stringify(details));
-      localStorage.setItem("userType", userType);
-
-      return dispatch({ type: LOGIN, payload: { type: userType, details } });
+      return dispatch({ type: LOGIN, payload: { type, details } });
     });
   };
 }

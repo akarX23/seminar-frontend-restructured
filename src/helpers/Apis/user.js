@@ -23,4 +23,18 @@ const signIn = async (userType, userDetails, cb) => {
     });
 };
 
-export { signUp, signIn };
+const authDetails = async (cb) => {
+  await api
+    .get("/user/auth")
+    .then((response) => cb(null, response.data))
+    .catch(cb);
+};
+
+const logout = async (cb) => {
+  await api
+    .get("/user/logout")
+    .then((response) => cb(null, response.data))
+    .catch(cb);
+};
+
+export { signUp, signIn, authDetails, logout };

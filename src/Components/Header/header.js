@@ -15,7 +15,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
 import MenuBookIcon from "@material-ui/icons/MenuBook";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import { collegeAddSessions, logout } from "../../actions/user_actions";
+import { collegeAddSessions, logoutAction } from "../../actions/user_actions";
 import BuySessions from "./buySessions";
 import { grey } from "@material-ui/core/colors";
 import TvIcon from "@material-ui/icons/Tv";
@@ -89,7 +89,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Header = ({ user: { details, type }, collegeAddSessions, logout }) => {
+const Header = ({
+  user: { details, type },
+  collegeAddSessions,
+  logoutAction,
+}) => {
   const classes = useStyles();
   const [show, setShowMenu] = useState(false);
   const [showBuySession, setShowBuySession] = useState(false);
@@ -104,7 +108,7 @@ const Header = ({ user: { details, type }, collegeAddSessions, logout }) => {
   const handleClose = () => setShowMenu(false);
 
   const handleLogout = async () => {
-    await logout();
+    await logoutAction();
     history.push("/");
   };
 
@@ -238,7 +242,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  ...bindActionCreators({ logout, collegeAddSessions }, dispatch),
+  ...bindActionCreators({ logoutAction, collegeAddSessions }, dispatch),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

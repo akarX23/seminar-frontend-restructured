@@ -123,7 +123,6 @@ const Home = ({ user: { details, type } }) => {
             }
           );
         }
-        console.log(sessions);
         setSessions(sessions);
         formatSessionList(sessions);
         setLoading(false);

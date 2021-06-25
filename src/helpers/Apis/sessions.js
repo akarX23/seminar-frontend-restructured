@@ -2,11 +2,9 @@ import { extractSessions } from "../utils";
 import api from "./index";
 
 const getAllSessions = async (cb) => {
-  console.log("Getting sessions");
   return await api
     .get(`/course/all`)
     .then((result) => {
-      console.log(result.data);
       const sessions = extractSessions(result.data);
       return cb(sessions);
     })
