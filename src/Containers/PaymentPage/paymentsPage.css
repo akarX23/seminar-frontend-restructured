@@ -1,0 +1,39 @@
+.plans-wrapper {
+  display: grid;
+  gap: 100px;
+  margin-top: 50px;
+  height: auto;
+  align-items: flex-start;
+}
+
+@media (min-width: 1200px) {
+  .plans-wrapper {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+}
+
+@media (max-width: 1200px) {
+  .plans-wrapper {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 800px) {
+  .plans-wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+.price-calc {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.session-count {
+  width: 80px;
+  padding: 10px;
+  outline: none !important;
+  font-size: medium;
+}

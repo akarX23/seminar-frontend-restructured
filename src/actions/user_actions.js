@@ -1,10 +1,11 @@
 import {
-  ADD_SESSIONS,
+  UPDATE_SESSIONS,
   CHANGE_SESSION_COUNT,
   LOGIN,
   USER_AUTH,
+  SUBSCRIBE_PLAN,
 } from "../helpers/ACTION_TYPES.js";
-import { addSessions } from "../helpers/Apis/college.js";
+import { addSessions, subscribeToPlan } from "../helpers/Apis/college.js";
 import { signIn } from "../helpers/Apis/user";
 
 export async function auth() {
@@ -43,17 +44,42 @@ export async function signInAction(userType, userDetails) {
 export async function collegeAddSessions(collegeId, sessions_bought) {
   return async function (dispatch) {
     let details = JSON.parse(localStorage.getItem("userDetails"));
+    let newSesCount =
+      parseInt(details.session_count) + parseInt(sessions_bought);
+
     localStorage.setItem(
       "userDetails",
       JSON.stringify({
         ...details,
-        session_count:
-          parseInt(details.session_count) + parseInt(sessions_bought),
+        session_count: newSesCount,
       })
     );
 
     addSessions(sessions_bought, collegeId, (data) => {
-      if (data) dispatch({ type: ADD_SESSIONS, payload: sessions_bought });
+      if (data) dispatch({ type: UPDATE_SESSIONS, payload: newSesCount });
+    });
+  };
+}
+
+export async function collegeSubscribesPlan(collegeId, newSesCount, planId) {
+  return async function (dispatch) {
+    let details = JSON.parse(localStorage.getItem("userDetails"));
+    localStorage.setItem(
+      "userDetails",
+      JSON.stringify({
+        ...details,
+        session_count: newSesCount,
+        planId,
+      })
+    );
+
+    subscribeToPlan(newSesCount, planId, collegeId, (success) => {
+      if (!success) {
+        alert("Something went wrong!");
+        return;
+      }
+
+      dispatch({ type: SUBSCRIBE_PLAN, payload: { newSesCount, planId } });
     });
   };
 }

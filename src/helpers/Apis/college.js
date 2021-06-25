@@ -5,9 +5,9 @@ import {
   extractSessions,
 } from "../utils";
 import api from "./index";
- 
+
 const addSessions = async (sessions_bought, collegeId, cb) => {
-  return await api 
+  return await api
     .put(`/college/buy_sessions?collegeId=${collegeId}`, {
       sessions_bought,
     })
@@ -16,7 +16,7 @@ const addSessions = async (sessions_bought, collegeId, cb) => {
     })
     .catch((err) => {
       console.log(err);
-       return cb(null);
+      return cb(null);
     });
 };
 
@@ -40,7 +40,8 @@ const getCollegeSubscribedSessions = async (collegeId, cb) => {
     .then((result) => {
       const sessionIds = extractSessionIds(result.data);
       const sessions = extractSessions(result.data);
-      return cb(sessionIds, sessions);
+      const courses = extractCourses(result.data);
+      return cb(sessionIds, sessions, courses);
     })
     .catch((err) => {
       console.log(err);
@@ -140,6 +141,21 @@ const addToSelected = async (courseIds, collegeId, cb) => {
     });
 };
 
+const subscribeToPlan = async (newSesCount, planId, collegeId, cb) => {
+  return await api
+    .post("/college/subscribe_plan", { newSesCount, planId, collegeId })
+    .then((result) => {
+      if (result.data.success) {
+        return cb(true);
+      }
+      return cb(false);
+    })
+    .catch((err) => {
+      console.log(err);
+      return cb(null);
+    });
+};
+
 export {
   addSessions,
   getUnivCoursesAndSessions,
@@ -151,4 +167,5 @@ export {
   uploadCSV,
   getClgCourses,
   addToSelected,
+  subscribeToPlan,
 };

@@ -14,6 +14,7 @@ import MyCourses from "./Containers/MyCourses/myCourses";
 import MySessions from "./Containers/MySessions/mySessions";
 import UploadToDb from "./Containers/UploadToDB/uploadToDb";
 import SessionDetails from "./Containers/SessionDetails/sessionDetails";
+import PaymentsPage from "./Containers/PaymentPage/paymentsPage";
 
 const Routes = () => {
   return (
@@ -36,6 +37,13 @@ const Routes = () => {
           path="/mySessions"
           component={Auth(MySessions, [userTypes.COLLEGE, userTypes.STUDENT])}
         />
+
+        <Route
+          exact
+          path="/payment-plans"
+          component={Auth(PaymentsPage, [userTypes.COLLEGE])}
+        />
+
         <Route exact path="/filesToDB" component={UploadToDb} />
         <Route path="/" component={Auth(Home)} />
       </Switch>

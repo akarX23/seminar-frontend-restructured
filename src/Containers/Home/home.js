@@ -107,6 +107,10 @@ const Home = ({ user: { details, type } }) => {
       });
     } else {
       getAllSessions((sessions) => {
+        if (!sessions) {
+          alert("Something went wrong!");
+          return;
+        }
         if (type === userTypes.STUDENT) {
           getCollegeSponsoredSessions(
             details.collegeId,
@@ -128,6 +132,8 @@ const Home = ({ user: { details, type } }) => {
   }, []);
 
   const formatSessionList = (newList) => {
+    if (!newList) return;
+
     let subbedIds = [];
     let modifiedList = [];
     if (type === userTypes.COLLEGE) subbedIds = [...clgSubscribed];

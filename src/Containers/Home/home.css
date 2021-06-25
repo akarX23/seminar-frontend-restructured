@@ -35,13 +35,15 @@
 }
 
 @media (min-width: 1200px) {
-  .sessions_wrapper {
+  .sessions_wrapper,
+  .plans-wrapper {
     grid-template-columns: 1fr 1fr;
   }
 }
 
 @media (max-width: 1200px) {
-  .sessions_wrapper {
+  .sessions_wrapper,
+  .plans-wrapper {
     grid-template-columns: 1fr;
   }
 }

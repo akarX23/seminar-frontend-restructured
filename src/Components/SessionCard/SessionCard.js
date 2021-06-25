@@ -38,7 +38,6 @@ const useStyles = makeStyles((theme) => ({
   },
   loaderStyles: {
     color: blueGrey[800],
-    margin: 0,
   },
 }));
 
@@ -255,10 +254,7 @@ const SessionCard = ({
             {schedule_info ? schedule_info : "Not yet Scheduled"}
           </p>
         </div>
-        <div
-          className="ses-action-wrapper"
-          onClick={(event) => event.preventDefault()}
-        >
+        <div className="ses-action-wrapper">
           {getPriceType()}
           {actionLoad ? (
             <div>

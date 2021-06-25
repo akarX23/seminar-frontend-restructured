@@ -1,7 +1,8 @@
 import {
-  ADD_SESSIONS,
   CHANGE_SESSION_COUNT,
   LOGIN,
+  SUBSCRIBE_PLAN,
+  UPDATE_SESSIONS,
   USER_AUTH,
 } from "../helpers/ACTION_TYPES";
 
@@ -11,12 +12,12 @@ export default (state = { ...initialState }, { type, payload }) => {
   switch (type) {
     case USER_AUTH:
       return { ...state, ...payload };
-    case ADD_SESSIONS: {
+    case UPDATE_SESSIONS: {
       return {
         ...state,
         details: {
           ...state.details,
-          session_count: state.details.session_count + parseInt(payload),
+          session_count: payload,
         },
       };
     }
@@ -24,6 +25,15 @@ export default (state = { ...initialState }, { type, payload }) => {
       return {
         ...state,
         details: { ...state.details, session_count: payload },
+      };
+    case SUBSCRIBE_PLAN:
+      return {
+        ...state,
+        details: {
+          ...state.details,
+          session_count: payload.newSesCount,
+          planId: payload.planId,
+        },
       };
     case LOGIN:
       return { ...state, ...payload };

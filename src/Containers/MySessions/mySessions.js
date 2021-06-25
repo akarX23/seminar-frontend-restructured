@@ -10,12 +10,53 @@ import {
 } from "../../helpers/Apis/student";
 import { userTypes } from "../../helpers/utils";
 import Loading from "../../WidgetsUI/Loading/loading";
+import TextField from "@material-ui/core/TextField";
+import MenuItem from "@material-ui/core/MenuItem";
+import { grey } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
   heading: {
     fontSize: 40,
     margin: "80px 0 80px",
     fontWeight: theme.typography.fontWeightMedium,
+  },
+  header: {
+    display: "flex",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  menu: {
+    backgroundColor: theme.palette.common.white,
+    paddingLeft: "2px",
+    paddingRight: "2px",
+    boxShadow: "0 0 4px 2px #000",
+    marginTop: 5,
+  },
+  menuItem: {
+    color: theme.palette.common.black,
+    borderRadius: "5px",
+    "&:hover": {
+      backgroundColor: grey[300],
+    },
+    padding: "5px 7px 5px",
+  },
+  selectedItem: {
+    backgroundColor: `${theme.palette.primary.light} !important`,
+    color: "white",
+  },
+  menuContain: {
+    color: "white",
+    padding: "10px",
+    backgroundColor: `${theme.palette.common.white} !important`,
+    color: theme.palette.common.black + " !important",
+    fontSize: 17,
+    boxShadow: "0 0 5px #000",
+  },
+  field: {
+    "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+      borderColor: "black",
+    },
   },
 }));
 
@@ -27,17 +68,29 @@ const MySessions = ({ user: { details, type } }) => {
   const [clgSubscribed, setClgSubscribed] = useState([]);
   const [clgSponsored, setClgSponsored] = useState([]);
   const [studentSub, setStudentSub] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const [courseList, setCourseList] = useState(-1);
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (type === userTypes.COLLEGE) {
-      getCollegeSubscribedSessions(details.id, (sessionIds, sessions) => {
-        setClgSubscribed([...sessionIds]);
-        setSessions([...sessions]);
-        setDislpaySessions([...sessions]);
-        setLoading(false);
-      });
+      getCollegeSubscribedSessions(
+        details.id,
+        (sessionIds, sessions, courses) => {
+          console.log(courses);
+          setClgSubscribed([...sessionIds]);
+          setSessions([...sessions]);
+          setDislpaySessions([...sessions]);
+          setCourses([
+            { text: "All Courses", value: -1 },
+            ...courses.map((course) => {
+              return { text: course.name, value: course.id };
+            }),
+          ]);
+          setLoading(false);
+        }
+      );
     } else if (type === userTypes.STUDENT) {
       getStudRegSessions(details.id, (sessions) => {
         getCollegeSponsoredSessions(details.collegeId, details.id, (sesIds) => {
@@ -63,22 +116,80 @@ const MySessions = ({ user: { details, type } }) => {
   };
 
   const changeStudentSessions = (filteredSessionIds) => {
-    console.log(studentSub);
     let newSessions = [
       ...sessions.filter((session) => filteredSessionIds.includes(session.id)),
     ];
-    console.log(filteredSessionIds);
     setStudentSub([...filteredSessionIds]);
     setSessions([...newSessions]);
     setDislpaySessions([...newSessions]);
   };
 
+  const updateSessionList = (courseId) => {
+    if (courseId === -1) {
+      setDislpaySessions([...sessions]);
+      setCourseList(courseId);
+      return;
+    }
+
+    let newDisplay = sessions.filter(
+      (session) => session.courseId === courseId
+    );
+    setDislpaySessions([...newDisplay]);
+    setCourseList(courseId);
+  };
+
+  const renderFilter = () => (
+    <TextField
+      select
+      value={courseList}
+      onChange={(event) => updateSessionList(event.target.value)}
+      classes={{ root: classes.field }}
+      variant="outlined"
+      SelectProps={{
+        classes: {
+          root: classes.menuContain,
+        },
+        MenuProps: {
+          classes: {
+            paper: classes.menu,
+          },
+          disableScrollLock: true,
+          disablePortal: true,
+          anchorOrigin: {
+            vertical: "bottom",
+            horizontal: "right",
+          },
+          transformOrigin: {
+            vertical: "top",
+            horizontal: "right",
+          },
+          getContentAnchorEl: null,
+        },
+      }}
+    >
+      {courses.map((course, i) => (
+        <MenuItem
+          value={course.value}
+          key={i}
+          classes={{
+            root: classes.menuItem,
+            selected: classes.selectedItem,
+          }}
+        >
+          {course.text}
+        </MenuItem>
+      ))}
+    </TextField>
+  );
+
   return (
     <div className="padding-alignment">
-      <h1 className={classes.heading}>
-        You are subscribed to the following sessions:
-      </h1>
-
+      <div className={classes.header}>
+        <h1 className={classes.heading}>
+          You are subscribed to the following sessions:
+        </h1>
+        {renderFilter()}
+      </div>
       {loading ? (
         <Loading />
       ) : (

@@ -40,6 +40,7 @@ const Footer = () => {
           flexGrow: 1,
           backgroundColor: "#ececec",
           marginBottom: "20px",
+          marginTop: "20px",
         }}
       ></div>
       <div className={`${classes.wrapper} padding-alignment`}>

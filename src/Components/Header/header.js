@@ -19,6 +19,7 @@ import { collegeAddSessions, logout } from "../../actions/user_actions";
 import BuySessions from "./buySessions";
 import { grey } from "@material-ui/core/colors";
 import TvIcon from "@material-ui/icons/Tv";
+import PaymentIcon from "@material-ui/icons/Payment";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -104,19 +105,26 @@ const Header = ({ user: { details, type }, collegeAddSessions, logout }) => {
 
   const handleLogout = async () => {
     await logout();
+    history.push("/");
   };
 
   const getCollegeDropdownNav = () => {
+    let buySessions = { text: "Buy Sessions", Icon: ShoppingBasketIcon };
+    if (!details.planId) buySessions["link"] = "/payment-plans";
+    else
+      buySessions["func"] = () => {
+        setShowBuySession(true);
+        setShowMenu(false);
+      };
+
     const nav = [
       { text: "My Courses", link: "/mycourses", Icon: MenuBookIcon },
       { text: "My Sessions", link: "/mysessions", Icon: TvIcon },
+      buySessions,
       {
-        text: "Buy Sessions",
-        func: () => {
-          setShowBuySession(true);
-          setShowMenu(false);
-        },
-        Icon: ShoppingBasketIcon,
+        text: "Buy / Upgrade Plan",
+        link: "/payment-plans",
+        Icon: PaymentIcon,
       },
     ];
     return nav;

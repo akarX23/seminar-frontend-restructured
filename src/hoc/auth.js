@@ -24,8 +24,6 @@ export default (ComposedClass, authUsers = null) => {
 
       // authUsers => true, false, array of user types. null
       console.log(details);
-      console.log(authUsers);
-      console.log(type);
       if (details && authUsers === false) this.props.history.push("/");
       else if (
         !details &&

@@ -1,42 +1,11 @@
 import React, { useState } from "react";
-import Dialog from "@material-ui/core/Dialog";
 import { makeStyles } from "@material-ui/core";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
-import Button from "@material-ui/core/Button";
-import TextField from "@material-ui/core/TextField";
 import { grey } from "@material-ui/core/colors";
 import useRazorpay from "../../helpers/useRazorpay";
-import { sesCreditAmount } from "../../helpers/utils";
+import { getFormattedPrice, paymentPlans } from "../../helpers/utils";
+import Modal from "../../WidgetsUI/Modal/modal";
 
 const useStyles = makeStyles((theme) => ({
-  dialog: {
-    backgroundColor: theme.palette.background.paper,
-    color: theme.palette.common.black,
-    minWidth: "500px",
-    boxShadow: "none",
-    paddingBottom: 10,
-    width: "100%",
-    boxSizing: "border-box",
-    paddingLeft: 20,
-  },
-  dialogTitle: {
-    width: "100%",
-    boxSizing: "border-box",
-    fontSize: 30,
-  },
-  closeIcon: {
-    position: "absolute",
-    top: 0,
-    right: 0,
-    color: "black",
-  },
-  inputWrapper: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "space-evenly",
-    marginBottom: 20,
-  },
   input: {
     "&::placeholder": {
       textOverflow: "ellipsis !important",
@@ -45,6 +14,16 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.common.black,
     ...theme.typography.h5,
     textAlign: "center",
+  },
+  container: {
+    paddingRight: 20,
+    "& h6": {
+      marginTop: 0,
+      fontSize: 30,
+      marginBottom: 0,
+      fontWeight: 550,
+      color: grey[900],
+    },
   },
 }));
 
@@ -62,7 +41,7 @@ const BuySessions = ({ open, onTransactionComplete, closeDialog, details }) => {
     handlePayment(
       // amount and receipt_id required
       {
-        amount: sesCreditAmount * sessionCount,
+        amount: paymentPlans[details.planId].price * sessionCount,
       },
       // Properties of the modal
       {
@@ -81,40 +60,48 @@ const BuySessions = ({ open, onTransactionComplete, closeDialog, details }) => {
     );
   };
 
+  const renderModalContent = () => {
+    if (!paymentPlans[details.planId]) return;
+    const { planName, price } = paymentPlans[details.planId];
+
+    return (
+      <div className={classes.container}>
+        <h6>{planName}</h6>
+        <div className="price-calc">
+          <p>Price per session</p>
+          <p> {getFormattedPrice(price)}</p>
+        </div>
+        <div className="price-calc">
+          <p>Number of sessions you want to buy</p>
+          <p>
+            <input
+              className="session-count"
+              value={sessionCount === 0 ? "" : sessionCount}
+              onChange={(event) => setSessionCount(event.target.value)}
+              type="number"
+              autoFocus
+              placeholder="Add..."
+            />
+          </p>
+        </div>
+        <div className="price-calc">
+          <p>Price to pay</p>
+          <p> {getFormattedPrice(price * sessionCount)}</p>
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <Dialog
+    <Modal
       open={open}
-      classes={{ paper: classes.dialog }}
-      onClose={(event) => closeDialog(false)}
+      closeDialog={closeDialog}
+      heading="Buy Session Credits"
+      buttonTxt="Buy"
+      onSubmit={initiateSessionTransaction}
     >
-      <div className={classes.dialogTitle}>
-        <p>Buy Session Credits</p>
-        <IconButton
-          className={classes.closeIcon}
-          onClick={(event) => closeDialog(false)}
-        >
-          <CloseIcon />
-        </IconButton>
-      </div>
-      <div className={classes.inputWrapper}>
-        <TextField
-          placeholder="Add..."
-          classes={{ root: classes.input }}
-          InputProps={{ classes: { input: classes.input } }}
-          value={sessionCount === 0 ? "" : sessionCount}
-          onChange={(event) => setSessionCount(event.target.value)}
-          type="number"
-          autoFocus
-        />
-        <Button
-          onClick={initiateSessionTransaction}
-          color="primary"
-          variant="contained"
-        >
-          buy
-        </Button>
-      </div>
-    </Dialog>
+      {renderModalContent()}
+    </Modal>
   );
 };
 
