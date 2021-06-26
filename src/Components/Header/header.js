@@ -114,7 +114,7 @@ const Header = ({
 
   const getCollegeDropdownNav = () => {
     let buySessions = { text: "Buy Sessions", Icon: ShoppingBasketIcon };
-    if (!details.planId) buySessions["link"] = "/payment-plans";
+    if (details.planId === null) buySessions["link"] = "/payment-plans";
     else
       buySessions["func"] = () => {
         setShowBuySession(true);

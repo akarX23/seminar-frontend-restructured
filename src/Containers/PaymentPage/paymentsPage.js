@@ -43,12 +43,11 @@ const PaymentsPage = ({ user: { details, type }, collegeSubscribesPlan }) => {
 
   const getPriceOfOwnedSessions = (newPlanId) => {
     const { planId, session_count } = details;
-    if (!planId) return 0;
+    if (planId === null) return 0;
 
     const amount =
       session_count *
       (paymentPlans[newPlanId].price - paymentPlans[planId].price);
-
     return amount;
   };
 
