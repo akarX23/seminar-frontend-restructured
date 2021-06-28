@@ -21,6 +21,7 @@ import SessionCard from "../../Components/SessionCard/SessionCard";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import SearchIcon from "@material-ui/icons/Search";
 import Loading from "../../WidgetsUI/Loading/loading";
+import Alert from "../../WidgetsUI/Alert/alert";
 
 const useStyles = makeStyles((theme) => ({
   header: {
@@ -93,6 +94,11 @@ const Home = ({ user: { details, type } }) => {
 
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(true);
+  const [alertInfo, setAlertInfo] = useState({
+    text: "",
+    showAlert: false,
+    severity: "",
+  });
 
   useEffect(() => {
     if (type === userTypes.COLLEGE) {
@@ -108,7 +114,13 @@ const Home = ({ user: { details, type } }) => {
     } else {
       getAllSessions((sessions) => {
         if (!sessions) {
-          alert("Something went wrong!");
+          setAlertInfo({
+            text: "Something went wrong!",
+            showAlert: true,
+            severity: "error",
+          });
+
+          setLoading(false);
           return;
         }
         if (type === userTypes.STUDENT) {
@@ -253,6 +265,7 @@ const Home = ({ user: { details, type } }) => {
               </>
             )}
           </div>
+          <Alert {...alertInfo} closeAlert={setAlertInfo} />
         </>
       )}
     </>

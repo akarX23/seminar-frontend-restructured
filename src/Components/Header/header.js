@@ -20,6 +20,7 @@ import BuySessions from "./buySessions";
 import { grey } from "@material-ui/core/colors";
 import TvIcon from "@material-ui/icons/Tv";
 import PaymentIcon from "@material-ui/icons/Payment";
+import Alert from "../../WidgetsUI/Alert/alert";
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -99,6 +100,12 @@ const Header = ({
   const [showBuySession, setShowBuySession] = useState(false);
   const history = useHistory();
 
+  const [alertInfo, setAlertInfo] = useState({
+    text: "",
+    showAlert: false,
+    severity: "",
+  });
+
   const menuTrigger = useRef(null);
 
   const handleOpenMenu = () => {
@@ -143,11 +150,20 @@ const Header = ({
 
   const handleBuySessions = async (number_of_sessions, verifiedData) => {
     if (!verifiedData) {
-      alert("Your transaction timed out!");
+      setAlertInfo({
+        showAlert: true,
+        text: "Your transaction timed out!",
+        severity: "error",
+      });
       setShowBuySession(false);
       return;
     }
     await collegeAddSessions(details?.id, number_of_sessions);
+    setAlertInfo({
+      showAlert: true,
+      text: "Transaction Successful!",
+      severity: "success",
+    });
     setShowBuySession(false);
   };
 
@@ -231,6 +247,7 @@ const Header = ({
           </>
         )}
       </div>
+      <Alert {...alertInfo} closeAlert={setAlertInfo} />
     </div>
   );
 };

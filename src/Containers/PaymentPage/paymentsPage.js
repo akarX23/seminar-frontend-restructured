@@ -5,6 +5,7 @@ import { makeStyles } from "@material-ui/core";
 import useRazorpay from "../../helpers/useRazorpay";
 import Modal from "../../WidgetsUI/Modal/modal";
 import { collegeSubscribesPlan } from "../../actions/user_actions";
+import Alert from "../../WidgetsUI/Alert/alert";
 
 import "./paymentsPage.css";
 
@@ -40,6 +41,11 @@ const PaymentsPage = ({ user: { details, type }, collegeSubscribesPlan }) => {
   const [planId, setPlanId] = useState(0);
   const [sessionCount, setSessionCount] = useState(0);
   const [paymentInProgress, setPaymentInProgress] = useState(false);
+  const [alertInfo, setAlertInfo] = useState({
+    text: "",
+    showAlert: false,
+    severity: "",
+  });
 
   const getPriceOfOwnedSessions = (newPlanId) => {
     const { planId, session_count } = details;
@@ -70,7 +76,11 @@ const PaymentsPage = ({ user: { details, type }, collegeSubscribesPlan }) => {
 
   const initiateTransaction = async () => {
     if (sessionCount < 1 || sessionCount === "") {
-      alert("You need to buy at least one session!");
+      setAlertInfo({
+        showAlert: true,
+        text: "You need to buy at least one session.",
+        severity: "info",
+      });
       return;
     }
 
@@ -96,12 +106,21 @@ const PaymentsPage = ({ user: { details, type }, collegeSubscribesPlan }) => {
       },
       async (verifiedData) => {
         if (!verifiedData) {
-          alert("Your transaction timed out!");
-          setPaymentInProgress(true);
+          setAlertInfo({
+            showAlert: true,
+            text: "Your transaction timed out!",
+            severity: "error",
+          });
+          setPaymentInProgress(false);
           setShowDialog(false);
           return;
         }
         await collegeSubscribesPlan(details.id, newSesCount, planId);
+        setAlertInfo({
+          showAlert: true,
+          text: "Transaction Successful!",
+          severity: "success",
+        });
         setShowDialog(false);
         setPaymentInProgress(false);
       }
@@ -175,6 +194,7 @@ const PaymentsPage = ({ user: { details, type }, collegeSubscribesPlan }) => {
       >
         {renderPriceDetails()}
       </Modal>
+      <Alert {...alertInfo} closeAlert={setAlertInfo} />
     </div>
   );
 };

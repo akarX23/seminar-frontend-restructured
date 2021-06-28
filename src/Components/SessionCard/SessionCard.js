@@ -17,6 +17,7 @@ import { Button, makeStyles } from "@material-ui/core";
 import Loading from "../../WidgetsUI/Loading/loading";
 import { blueGrey } from "@material-ui/core/colors";
 import { useHistory } from "react-router-dom";
+import Alert from "../../WidgetsUI/Alert/alert";
 
 const useStyles = makeStyles((theme) => ({
   link: {
@@ -65,12 +66,21 @@ const SessionCard = ({
   const history = useHistory();
 
   const [actionLoad, setActionLoad] = useState(false);
+  const [alertInfo, setAlertInfo] = useState({
+    text: "",
+    showAlert: false,
+    severity: "",
+  });
 
   const subscribeSession = async (sessionId) => {
     setActionLoad(true);
     const { session_count } = details;
     if (session_count < 1) {
-      alert("You don't have enough session credits!");
+      setAlertInfo({
+        showAlert: true,
+        text: "You don't have enough credits!",
+        severity: "warning",
+      });
       setActionLoad(false);
       return;
     }
@@ -83,7 +93,16 @@ const SessionCard = ({
         if (subscribed) {
           await changeSessionCount(session_count - 1);
           setSessionsRegistered([...sessionsRegistered, sessionId]);
-        } else alert("Something went wrong");
+          setAlertInfo({
+            showAlert: true,
+            text: "Subscription Successful!",
+          });
+        } else
+          setAlertInfo({
+            showAlert: true,
+            text: "Something went wrong! Please try again later.",
+            severity: "error",
+          });
         setActionLoad(false);
       }
     );
@@ -95,8 +114,17 @@ const SessionCard = ({
       { sesId, courseId, studentId: details.id },
       (response) => {
         if (response.success) {
+          setAlertInfo({
+            showAlert: true,
+            text: "Subscription Successful!",
+          });
           changeStudentSessions([...studentSubscribedSessions, sesId]);
-        } else alert("Somehting went wrong!");
+        } else
+          setAlertInfo({
+            showAlert: true,
+            text: "Something went wrong! Please try again later.",
+            severity: "error",
+          });
         setActionLoad(false);
       }
     );
@@ -106,13 +134,22 @@ const SessionCard = ({
     setActionLoad(true);
     studentUnregSession({ sesId, studentId: details.id }, (success) => {
       if (!success) {
-        alert("Something went wrong!");
+        setAlertInfo({
+          showAlert: true,
+          text: "Something went wrong! Please try again later.",
+          severity: "error",
+        });
+        setActionLoad(false);
         return;
       }
 
       let filteredSessions = studentSubscribedSessions.filter(
         (sessionId) => sesId !== sessionId
       );
+      setAlertInfo({
+        showAlert: true,
+        text: "You have unsubscribed from the session.",
+      });
       changeStudentSessions(filteredSessions);
       setActionLoad(false);
     });
@@ -127,10 +164,18 @@ const SessionCard = ({
         let filteredSessions = sessionsRegistered.filter(
           (sessionId) => sesId !== sessionId
         );
+        setAlertInfo({
+          showAlert: true,
+          text: "You have unsubscribed from the session.",
+        });
         changeSessionCount(session_count + 1);
         setSessionsRegistered([...filteredSessions]);
       } else {
-        alert("Something went wrong!");
+        setAlertInfo({
+          showAlert: true,
+          text: "Something went wrong! Please try again later.",
+          severity: "error",
+        });
       }
       setActionLoad(false);
     });
@@ -265,6 +310,7 @@ const SessionCard = ({
           )}
         </div>
       </div>
+      <Alert {...alertInfo} closeAlert={setAlertInfo} />
     </div>
   );
 };

@@ -4,6 +4,7 @@ import { grey } from "@material-ui/core/colors";
 import useRazorpay from "../../helpers/useRazorpay";
 import { getFormattedPrice, paymentPlans } from "../../helpers/utils";
 import Modal from "../../WidgetsUI/Modal/modal";
+import Alert from "../../WidgetsUI/Alert/alert";
 
 const useStyles = makeStyles((theme) => ({
   input: {
@@ -32,9 +33,19 @@ const BuySessions = ({ open, onTransactionComplete, closeDialog, details }) => {
   const handlePayment = useRazorpay();
 
   const [sessionCount, setSessionCount] = useState(0);
+  const [alertInfo, setAlertInfo] = useState({
+    text: "",
+    showAlert: false,
+    severity: "",
+  });
 
   const initiateSessionTransaction = () => {
     if (sessionCount < 1) {
+      setAlertInfo({
+        showAlert: true,
+        text: "You need to buy at least one session.",
+        severity: "info",
+      });
       return;
     }
 
@@ -93,15 +104,18 @@ const BuySessions = ({ open, onTransactionComplete, closeDialog, details }) => {
   };
 
   return (
-    <Modal
-      open={open}
-      closeDialog={closeDialog}
-      heading="Buy Session Credits"
-      buttonTxt="Buy"
-      onSubmit={initiateSessionTransaction}
-    >
-      {renderModalContent()}
-    </Modal>
+    <>
+      <Modal
+        open={open}
+        closeDialog={closeDialog}
+        heading="Buy Session Credits"
+        buttonTxt="Buy"
+        onSubmit={initiateSessionTransaction}
+      >
+        {renderModalContent()}
+      </Modal>
+      <Alert {...alertInfo} closeAlert={setAlertInfo} />
+    </>
   );
 };
 
