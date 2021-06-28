@@ -70,6 +70,7 @@ const sesCreditAmount = 200;
 const paymentPlans = [
   {
     planName: "Basic Plus (B+)",
+    tagline: "For the basics",
     price: 2000,
     students: 75,
     faculties: 2,
@@ -84,6 +85,7 @@ const paymentPlans = [
   },
   {
     planName: "Advance (A)",
+    tagline: "For the small group",
     price: 3000,
     students: 100,
     faculties: 5,
@@ -98,6 +100,7 @@ const paymentPlans = [
   },
   {
     planName: "Advance Plus (A+)",
+    tagline: "For the professionals",
     price: 5000,
     students: 150,
     faculties: 10,

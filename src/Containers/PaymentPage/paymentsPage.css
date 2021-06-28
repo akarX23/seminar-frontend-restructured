@@ -3,7 +3,7 @@
   gap: 100px;
   margin-top: 50px;
   height: auto;
-  align-items: flex-start;
+  align-items: stretch;
 }
 
 @media (min-width: 1200px) {
