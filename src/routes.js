@@ -15,6 +15,7 @@ import MySessions from "./Containers/MySessions/mySessions";
 import UploadToDb from "./Containers/UploadToDB/uploadToDb";
 import SessionDetails from "./Containers/SessionDetails/sessionDetails";
 import PaymentsPage from "./Containers/PaymentPage/paymentsPage";
+import MeetingTest from "./Components/MeetingTest/meetingTest";
 
 const Routes = () => {
   return (
@@ -45,6 +46,7 @@ const Routes = () => {
         />
 
         <Route exact path="/filesToDB" component={UploadToDb} />
+        <Route exact path="/test-meet-load" component={MeetingTest} />
         <Route path="/" component={Auth(Home)} />
       </Switch>
     </ThemeProvider>
